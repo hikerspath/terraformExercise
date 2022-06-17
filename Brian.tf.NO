@@ -1,0 +1,19 @@
+terraform {
+  required_providers {
+    template = "~> 2.1.2"
+  }
+}
+
+resource "local_file" "example" {
+  content  = data.template_file.example.rendered
+  count    = 3
+  filename = "example${count.index+1}.txt"
+}
+
+locals {
+  example_text = "A Rose by any other name would smell as sweet."
+}
+
+data "template_file" "example" {
+  template = join("\n",[for no in tolist([1,2,3,4]) : "${no} ${local.example_text}"])
+}
